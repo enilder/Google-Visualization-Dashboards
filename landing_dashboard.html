@@ -1,0 +1,102 @@
+<html>
+ <head>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+	  google.charts.load('current', {'packages':['corechart', 'controls', 'table']});
+      google.charts.setOnLoadCallback(initialize);
+	  
+	  function initialize () {
+	    var opts = {sendMethod: 'auto'};
+        // Replace the data source URL on next line with your data source URL.
+        var query = new google.visualization.Query('https://docs.google.com/spreadsheets/d/1NJtN-i3LnaAt8n7sq2bGzmRUodgi9LqNthRldTrXcww/edit#gid=0', opts);  
+        query.setQuery("Select *");		
+        // Send the query with a callback function.
+        query.send(handleQueryResponse);
+	  }
+	  
+	  function handleQueryResponse(response) {
+	    if (response.isError()) {
+        alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
+        return;		
+		}
+		
+	    var data = response.getDataTable();
+		
+		var dashboard = new google.visualization.Dashboard(
+		document.getElementById('landing_page_dashboard'));
+		
+		programmaticPageSlider = new google.visualization.ControlWrapper({
+          'controlType': 'CategoryFilter',
+          'containerId': 'programmatic_control_div',
+          'options': {
+            'filterColumnIndex': 0,
+            'ui': {'labelStacking': 'vertical'}
+          }
+        });
+		
+		programmaticMediumSlider = new google.visualization.ControlWrapper({
+          'controlType': 'CategoryFilter',
+          'containerId': 'programmatic_medium_div',
+          'options': {
+            'filterColumnIndex': 1,
+            'ui': {'labelStacking': 'vertical'}
+          }
+        });
+		
+		var LandingPage_programmatic_pie = new google.visualization.ChartWrapper({
+			'chartType': 'PieChart',
+			'containerId': 'landing_page_revenue_PieChart',
+			'options': {'title':'Revenue by Landing Page'},
+			'view': {'columns': [0,8]}			
+		});
+		
+		var Medium_programmatic_pie = new google.visualization.ChartWrapper({
+			'chartType': 'PieChart',
+			'containerId': 'medium_revenue_pieChart',
+			'options': {'title':'Revenue by Medium'},
+			'view': {'columns': [1,8]}			
+		});
+		
+		var programmatic_table = new google.visualization.ChartWrapper({
+			'chartType': 'Table',
+			'containerId': 'table_div',
+			'chartArea' : {'left': 30, 'top': 30, 'right': 0, 'bottom': 0}
+		});
+		
+	  // insert charts and edits here
+	  dashboard.bind([programmaticPageSlider, programmaticMediumSlider],[Medium_programmatic_pie, programmatic_table]);
+	  dashboard.draw(data);
+	  
+	  }
+	  
+	</script>
+ </head>
+ <body>
+	 <div id="landing_page_dashboard">
+		<table class="columns">
+			<tr>
+				<td>
+					<div id="programmatic_control_div" style="padding-left: 50;">
+					</div>
+					<div id="programmatic_medium_div" style="padding-left: 50;">
+					</div>
+				</td>
+				<td>
+					<div id="landing_page_revenue_PieChart">
+					</div>
+				</td>
+				<td>
+					<div id="medium_revenue_pieChart">
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="3"> 
+					<div id="table_div" style="padding-left: 50;">
+					</div>
+				</td>
+			</tr>
+		</table>
+	 </div>
+ </body>
+</html>
